@@ -65,8 +65,8 @@ async def me():
 
 
 def _basin_json(basin: Basin, page: int = 1, page_size: int = 3) -> dict:
-    # 正序：最旧在前，新写入落在后面页
-    rows = sorted(basin.readings or [], key=lambda r: r.taken_at)
+    # 倒序：最新在前，新写入立刻落在第 1 页最前；同秒时以 id 大的为新
+    rows = sorted(basin.readings or [], key=lambda r: (r.taken_at, r.id), reverse=True)
     total = len(rows)
     start = max(0, (page - 1) * page_size)
     slice_rows = rows[start : start + page_size]
@@ -143,7 +143,7 @@ async def add_reading(basin_id: int):
             return jsonify({"detail": "盆不存在"}), 404
         await repo.add_reading(basin, temp, g.user.username)
         basin = await repo.get(basin_id)
-        # 写完仍回第 1 页正序切片：首页仍是旧温
+        # 写完回第 1 页：倒序切片，新温就在首页最前
         return _basin_json(basin, page=1)
 
 

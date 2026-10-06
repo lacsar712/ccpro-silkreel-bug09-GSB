@@ -86,7 +86,7 @@ function Yard() {
         body: JSON.stringify({ waterTempC: Number(temp) }),
       });
       await refresh();
-      // 角标跟 board.readingCount；抽屉首页仍用接口返回的正序第 1 页
+      // 角标跟 board.readingCount；抽屉首页用接口返回的倒序第 1 页，新温在最前
       setPicked(row);
       setPage(1);
     } catch (ex) {
