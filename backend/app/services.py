@@ -13,7 +13,8 @@ class RuleError(ValueError):
 def latest_temp(basin: Basin) -> float | None:
     if not basin.readings:
         return None
-    latest = max(basin.readings, key=lambda r: r.taken_at)
+    # 与首页倒序保持同一口径：taken_at 相同以 id 较大者为最新
+    latest = max(basin.readings, key=lambda r: (r.taken_at, r.id))
     return latest.water_temp_c
 
 
